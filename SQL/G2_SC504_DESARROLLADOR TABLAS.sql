@@ -126,3 +126,12 @@ CREATE TABLE DetalleOrden (
     CONSTRAINT fk_do_oc       FOREIGN KEY (orden_compra_ID) REFERENCES OrdenCompra(orden_compra_ID),
     CONSTRAINT fk_do_producto FOREIGN KEY (producto_ID)     REFERENCES Producto(producto_ID)
 );
+
+
+CREATE TABLE Usuario (
+    usuario_ID      NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nombre_usuario  VARCHAR2(60)   NOT NULL,
+    contraseña      VARCHAR2(255)  NOT NULL,
+    rol             VARCHAR2(30)   NOT NULL,
+    estado          VARCHAR2(20)   NOT NULL
+)
