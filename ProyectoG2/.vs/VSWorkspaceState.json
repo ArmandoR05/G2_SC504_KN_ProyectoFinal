@@ -1,0 +1,18 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\main",
+    "\\src\\main\\java",
+    "\\src\\main\\java\\com",
+    "\\src\\main\\java\\com\\proyecto",
+    "\\src\\main\\java\\com\\proyecto\\controller",
+    "\\src\\main\\resources",
+    "\\src\\main\\resources\\templates",
+    "\\src\\main\\resources\\templates\\asesoria",
+    "\\src\\main\\resources\\templates\\ayuda",
+    "\\src\\main\\resources\\templates\\layout"
+  ],
+  "SelectedNode": "\\src\\main\\resources\\templates\\layout\\fragmentos.html",
+  "PreviewInSolutionExplorer": false
+}

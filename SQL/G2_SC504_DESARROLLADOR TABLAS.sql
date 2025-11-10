@@ -4,9 +4,9 @@ CREATE TABLE Producto (
     nombre      VARCHAR2(50 CHAR)   NOT NULL,
     categoria   VARCHAR2(30 CHAR)   NOT NULL,
     descripcion VARCHAR2(255 CHAR)  NOT NULL,
-    imagen      VARCHAR2(1024 CHAR) NOT NULL,
     precio      NUMBER(10,2)        NOT NULL
 );
+
 
 -- Inventario
 CREATE TABLE Inventario (

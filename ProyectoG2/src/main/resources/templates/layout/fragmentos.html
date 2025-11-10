@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head></head>
+
+    <body>
+
+        <div th:fragment="bienvenida">
+            <section class="py-5 bg-light border rounded shadow-sm">
+                <div class="container text-center">
+
+                    <h1 class="display-5 fw-bold mb-3">
+                        Bienvenido al Sistema de Gestión – Proyecto G2
+                    </h1>
+
+                    <p class="lead text-muted mb-4">
+                        Administra productos, inventario, pedidos, clientes, proveedores y todo tu flujo de atención en un solo lugar.
+                    </p>
+
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <a th:href="@{/dashboard}" class="btn btn-primary btn-lg">
+                            Ir al Dashboard
+                        </a>
+
+                        <a th:href="@{/productos}" class="btn btn-outline-secondary btn-lg">
+                            Ver Productos
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </body>
+
+</html>
+
