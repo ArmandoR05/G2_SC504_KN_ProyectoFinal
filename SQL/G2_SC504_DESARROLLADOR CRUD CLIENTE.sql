@@ -1,0 +1,103 @@
+CREATE OR REPLACE PACKAGE pkg_cliente AS
+  
+  PROCEDURE LISTAR(
+    P_CURSOR OUT SYS_REFCURSOR
+  );
+
+  PROCEDURE CREAR(
+    P_NOMBRE IN NVARCHAR2,
+    P_CORREO IN NVARCHAR2,
+    P_TELEFONO IN NVARCHAR2,
+    P_DIRECCION IN NVARCHAR2,
+    P_CLIENTE_ID OUT NUMBER
+  );
+
+  PROCEDURE ACTUALIZAR(
+    P_CLIENTE_ID IN NUMBER,
+    P_NOMBRE IN NVARCHAR2,
+    P_CORREO IN NVARCHAR2,
+    P_TELEFONO IN NVARCHAR2,
+    P_DIRECCION IN NVARCHAR2
+  );
+
+  PROCEDURE OBTENER_POR_ID(
+    P_CLIENTE_ID IN NUMBER,
+    P_CURSOR OUT SYS_REFCURSOR
+  );
+
+  PROCEDURE ELIMINAR(
+    P_CLIENTE_ID IN NUMBER
+  );
+
+END pkg_cliente;
+/
+
+
+
+
+CREATE OR REPLACE PACKAGE BODY pkg_cliente AS
+
+  PROCEDURE LISTAR(P_CURSOR OUT SYS_REFCURSOR) IS
+  BEGIN
+    OPEN P_CURSOR FOR
+      SELECT cliente_id,
+             nombre,
+             correo,
+             telefono,
+             direccion
+      FROM cliente
+      ORDER BY cliente_id;
+  END LISTAR;
+
+  PROCEDURE CREAR(
+    P_NOMBRE IN NVARCHAR2,
+    P_CORREO IN NVARCHAR2,
+    P_TELEFONO IN NVARCHAR2,
+    P_DIRECCION IN NVARCHAR2,
+    P_CLIENTE_ID OUT NUMBER
+  ) IS
+  BEGIN
+    INSERT INTO cliente(nombre,correo,telefono,direccion)
+    VALUES(P_NOMBRE,P_CORREO,P_TELEFONO,P_DIRECCION)
+    RETURNING cliente_id INTO P_CLIENTE_ID;
+  END CREAR;
+
+  PROCEDURE ACTUALIZAR(
+    P_CLIENTE_ID IN NUMBER,
+    P_NOMBRE IN NVARCHAR2,
+    P_CORREO IN NVARCHAR2,
+    P_TELEFONO IN NVARCHAR2,
+    P_DIRECCION IN NVARCHAR2
+  ) IS
+  BEGIN
+    UPDATE cliente
+       SET nombre=P_NOMBRE,
+           correo=P_CORREO,
+           telefono=P_TELEFONO,
+           direccion=P_DIRECCION
+     WHERE cliente_id=P_CLIENTE_ID;
+  END ACTUALIZAR;
+
+  PROCEDURE OBTENER_POR_ID(
+    P_CLIENTE_ID IN NUMBER,
+    P_CURSOR OUT SYS_REFCURSOR
+  ) IS
+  BEGIN
+    OPEN P_CURSOR FOR
+      SELECT cliente_id,
+             nombre,
+             correo,
+             telefono,
+             direccion
+        FROM cliente
+       WHERE cliente_id = P_CLIENTE_ID;
+  END OBTENER_POR_ID;
+
+  PROCEDURE ELIMINAR(P_CLIENTE_ID IN NUMBER) IS
+  BEGIN
+    DELETE FROM cliente WHERE cliente_id=P_CLIENTE_ID;
+  END ELIMINAR;
+
+END pkg_cliente;
+/
+
