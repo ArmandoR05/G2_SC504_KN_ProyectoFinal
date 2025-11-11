@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:insert="~{layout/plantilla :: head}"></head>
+    <body>
+
+        <header th:insert="~{layout/plantilla :: header}"></header>
+
+        <main class="container py-4">
+
+            <h1 class="h4 mb-3">Editar Cliente</h1>
+
+            <form th:action="@{/clientes/{id}(id=${cliente.clienteId})}" method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input class="form-control" name="nombre"
+                           th:value="${cliente.nombre}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Correo</label>
+                    <input type="email" class="form-control" name="correo"
+                           th:value="${cliente.correo}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Teléfono</label>
+                    <input class="form-control" name="telefono"
+                           th:value="${cliente.telefono}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Dirección</label>
+                    <textarea class="form-control" name="direccion" rows="2"
+                              th:text="${cliente.direccion}"></textarea>
+                </div>
+
+                <button class="btn btn-primary btn-sm">Actualizar</button>
+                <a th:href="@{/clientes}" class="btn btn-secondary btn-sm ms-2">Cancelar</a>
+
+            </form>
+
+        </main>
+
+        <footer th:insert="~{layout/plantilla :: footer}"></footer>
+
+    </body>
+</html>

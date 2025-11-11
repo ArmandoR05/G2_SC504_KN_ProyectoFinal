@@ -44,4 +44,61 @@
     });
 })();
 
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.btn-eliminar').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const form = this.closest('form');
+            Swal.fire({
+                title: '¿Eliminar registro?',
+                text: 'Esta acción no se puede deshacer.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed)
+                    form.submit();
+            });
+        });
+    });
+});
+
+const okMsg = /*[[${ok}]]*/ null;
+if (okMsg) {
+    Swal.fire({icon: 'success', title: '¡Listo!', text: okMsg, timer: 1800, showConfirmButton: false});
+}
+
+// Validación Bootstrap simple
+(function () {
+    const form = document.getElementById('frm-crear-cliente');
+    form.addEventListener('submit', function (e) {
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    }, false);
+})();
+
+
+document.querySelectorAll('.btn-eliminar').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const form = this.closest('form');
+        Swal.fire({
+            title: '¿Eliminar cliente?',
+            text: 'Esta acción no se puede deshacer.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+});
+
 
