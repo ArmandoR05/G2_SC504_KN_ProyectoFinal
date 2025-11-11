@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:insert="~{layout/plantilla :: head}"></head>
+    <body>
+        <header th:insert="~{layout/plantilla :: header}"></header>
+
+        <main class="container py-4">
+            <h1 class="h4" th:text="${titulo}">Buscar nombre</h1>
+
+            <form class="row g-2 mb-3" method="get" th:action="@{/productos/consultas/buscar-nombre}">
+                <div class="col-auto">
+                    <input class="form-control" type="text" name="q" placeholder="Texto a buscar" th:value="${q}">
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary">Buscar</button>
+                </div>
+            </form>
+
+            <div th:if="${q != null}">
+                <p class="text-secondary">Resultado para: <strong th:text="${q}">q</strong></p>
+            </div>
+
+            <div th:if="${productos != null and #lists.isEmpty(productos)}" class="alert alert-info">
+                Sin resultados.
+            </div>
+
+            <div th:if="${productos != null and !#lists.isEmpty(productos)}" class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead><tr>
+                            <th>ID</th><th>Nombre</th><th>Categoría</th><th>Descripción</th><th class="text-end">Precio</th>
+                        </tr></thead>
+                    <tbody>
+                        <tr th:each="p : ${productos}">
+                            <td th:text="${p.producto_id}"></td>
+                            <td th:text="${p.nombre}"></td>
+                            <td th:text="${p.categoria}"></td>
+                            <td th:text="${p.descripcion}"></td>
+                            <td class="text-end" th:text="${#numbers.formatDecimal(p.precio, 1, 'COMMA', 2, 'POINT')}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <footer th:insert="~{layout/plantilla :: footer}"></footer>
+    </body>
+</html>
+

@@ -157,6 +157,20 @@ END;
 
 
 
+--VISTAS
+--  Productos básicos
+CREATE OR REPLACE VIEW vw_productos AS
+SELECT producto_id, nombre, categoria, descripcion, precio
+FROM producto;
+
+--  Productos por categoría
+CREATE OR REPLACE VIEW vw_productos_por_categoria AS
+SELECT categoria, producto_id, nombre, precio
+FROM producto;
+
+
+
+
 
 
 

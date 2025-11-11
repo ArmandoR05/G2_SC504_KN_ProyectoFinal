@@ -37,15 +37,32 @@
                             </li>
 
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="productosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="productosDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-bag"></i> Productos
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="productosDropdown">
-                                    <li><a class="dropdown-item" th:href="@{/productos}"><i class="bi bi-list-ul"></i> Lista</a></li>
+                                    <li class="dropdown-header">Vistas & Consultas</li>
+                                    <li><a class="dropdown-item" th:href="@{/productos/consultas/vw}">
+                                            <i class="bi bi-table"></i> Vista: vw_productos</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/productos/consultas/listar}">
+                                            <i class="bi bi-list-ul"></i> SP: listar</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/productos/consultas/buscar-nombre}">
+                                            <i class="bi bi-search"></i> SP: buscar por nombre</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/productos/consultas/buscar-categoria}">
+                                            <i class="bi bi-search"></i> SP: buscar por categoría</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/productos/consultas/detalle/1}">
+                                            <i class="bi bi-info-circle"></i> Funciones (detalle ejemplo)</a></li>
+
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" th:href="@{/productos/crear}"><i class="bi bi-plus-circle"></i> Crear</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/productos}">
+                                            <i class="bi bi-card-list"></i> Lista (CRUD)</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/productos/crear}">
+                                            <i class="bi bi-plus-circle"></i> Crear</a></li>
                                 </ul>
                             </li>
+
+
 
                             <li class="nav-item">
                                 <a class="nav-link" th:href="@{/inventario}">
@@ -109,7 +126,7 @@
                                 </a>
                             </li>
                         </ul>
-                        
+
                     </div>
                 </div>
             </nav>

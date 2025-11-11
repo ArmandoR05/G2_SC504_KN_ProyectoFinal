@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:insert="~{layout/plantilla :: head}"></head>
+    <body>
+        <header th:insert="~{layout/plantilla :: header}"></header>
+
+        <main class="container py-4">
+            <h1 class="h4" th:text="${titulo}">Detalle</h1>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p><strong>ID:</strong> <span th:text="${id}">0</span></p>
+                    <p><strong>Nombre (fn_nombre_producto):</strong> <span th:text="${nombre}">-</span></p>
+                    <p><strong>Precio (fn_producto_precio):</strong> <span th:text="${precio}">0.00</span></p>
+                    <p><strong>Valor en inventario (fn_valor_inventario_producto):</strong>
+                        <span th:text="${valorInventario}">0.00</span></p>
+                </div>
+            </div>
+        </main>
+
+        <footer th:insert="~{layout/plantilla :: footer}"></footer>
+    </body>
+</html>
+

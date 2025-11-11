@@ -135,6 +135,21 @@ BEGIN
 END;
 /
 
+-- VISTAS
+CREATE OR REPLACE VIEW vw_inventario AS
+SELECT i.producto_id, p.nombre AS nombre_producto, i.cantidad_actual
+FROM inventario i
+JOIN producto p ON p.producto_id = i.producto_id;
+
+CREATE OR REPLACE VIEW vw_inventario_bajo AS
+SELECT *
+FROM vw_inventario
+WHERE cantidad_actual < 5;
+
+CREATE OR REPLACE VIEW vw_inventario_sin_stock AS
+SELECT *
+FROM vw_inventario
+WHERE cantidad_actual = 0;
 
 
 
