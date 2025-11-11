@@ -18,7 +18,7 @@
         <header th:fragment="header">
             <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
                 <div class="container-fluid">
-                    <a class="navbar-brand fw-semibold" th:href="@{/dashboard}">
+                    <a class="navbar-brand fw-semibold" th:href="@{/index}">
                         <i class="bi bi-boxes"></i> Proyecto G2
                     </a>
 
@@ -42,9 +42,8 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="productosDropdown">
                                     <li><a class="dropdown-item" th:href="@{/productos}"><i class="bi bi-list-ul"></i> Lista</a></li>
-                                    <li><a class="dropdown-item" th:href="@{/productos/crear}"><i class="bi bi-plus-circle"></i> Crear</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" th:href="@{/inventario}"><i class="bi bi-box-seam"></i> Inventario</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/productos/crear}"><i class="bi bi-plus-circle"></i> Crear</a></li>
                                 </ul>
                             </li>
 

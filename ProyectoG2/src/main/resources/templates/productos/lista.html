@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:insert="~{layout/plantilla :: head}">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    </head>
+    <body th:attr="data-ok=${ok}, data-err=${err}">
+        <header th:insert="~{layout/plantilla :: header}"></header>
+
+        <main class="container py-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="h4 mb-0">Productos</h1>
+
+                <a th:href="@{/productos/crear}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle"></i> Crear Producto
+                </a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(productos)}" class="alert alert-info">
+                No hay productos registrados.
+            </div>
+
+            <div th:if="${!#lists.isEmpty(productos)}" class="table-responsive">
+                <table class="table table-sm table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Descripción</th>
+                            <th class="text-end">Precio</th>
+                            <th class="text-center" style="width: 150px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${productos}">
+                            <td th:text="${p.productoId}"></td>
+                            <td th:text="${p.nombre}"></td>
+                            <td th:text="${p.categoria}"></td>
+                            <td th:text="${p.descripcion}"></td>
+                            <td class="text-end"
+                                th:text="${#numbers.formatDecimal(p.precio,1,'POINT',2,'NONE')}"></td>
+
+                            <td class="text-center">
+
+                                <a th:href="@{|/productos/${p.productoId}/editar|}"
+                                   class="btn btn-warning btn-sm me-1" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                <!-- ELIMINAR con SweetAlert -->
+                                <form th:action="@{|/productos/${p.productoId}/eliminar|}"
+                                      method="post" class="d-inline form-eliminar"
+                                      th:attr="data-id=${p.productoId}, data-nombre=${p.nombre}">
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+
+        <footer th:insert="~{layout/plantilla :: footer}"></footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="/js/proyecto.js"></script>
+
+       
+    </body>
+</html>
+
+
+

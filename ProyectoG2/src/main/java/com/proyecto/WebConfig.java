@@ -5,6 +5,7 @@
 package com.proyecto;
 
  
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -13,8 +14,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        // Ruta raíz → templates/index.html
-        registry.addViewController("/").setViewName("index");
+    public void addViewControllers(ViewControllerRegistry r) {
+        r.addViewController("/index").setViewName("index");
+        r.addViewController("/").setViewName("index");                 
+        r.addViewController("/productos").setViewName("productos/lista"); 
+        r.addViewController("/productos/crear").setViewName("productos/crear");
     }
 }
+
