@@ -75,17 +75,6 @@ BEGIN
 END;
 /
 
-
-CREATE OR REPLACE TRIGGER trg_producto_bu_precio
-BEFORE UPDATE OF precio ON producto
-FOR EACH ROW
-BEGIN
-  IF :NEW.precio < 0 THEN
-    RAISE_APPLICATION_ERROR(-20010, 'El precio no puede ser negativo');
-  END IF;
-END;
-/
-
 -- Evitar inventario negativo
 CREATE OR REPLACE TRIGGER trg_inventario_bu_no_neg
 BEFORE UPDATE OF cantidad_actual ON inventario
@@ -107,7 +96,6 @@ BEGIN
   RETURN v;
 END;
 /
-
 -- stock
 CREATE OR REPLACE FUNCTION fn_tiene_stock(p_producto_id IN NUMBER)
 RETURN CHAR IS
@@ -115,7 +103,6 @@ BEGIN
   RETURN CASE WHEN fn_stock_disponible(p_producto_id) > 0 THEN 'S' ELSE 'N' END;
 END;
 /
-
 --reponer
 CREATE OR REPLACE FUNCTION fn_reponer_necesario(p_producto_id IN NUMBER, p_umbral IN NUMBER)
 RETURN CHAR IS
@@ -123,7 +110,6 @@ BEGIN
   RETURN CASE WHEN fn_stock_disponible(p_producto_id) < p_umbral THEN 'S' ELSE 'N' END;
 END;
 /
-
 -- Valor total de todo el inventario
 CREATE OR REPLACE FUNCTION fn_valor_total_inventario
 RETURN NUMBER IS v NUMBER;

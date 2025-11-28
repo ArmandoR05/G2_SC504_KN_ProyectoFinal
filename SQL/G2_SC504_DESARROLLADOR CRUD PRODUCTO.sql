@@ -124,7 +124,6 @@ BEGIN
   RETURN v;
 END;
 /
-
 -- Nombre del producto
 CREATE OR REPLACE FUNCTION fn_nombre_producto(p_producto_id IN NUMBER)
 RETURN NVARCHAR2 IS v NVARCHAR2(200);
@@ -133,7 +132,6 @@ BEGIN
   RETURN v;
 END;
 /
-
 -- Precio del producto
 CREATE OR REPLACE FUNCTION fn_producto_precio(p_producto_id IN NUMBER)
 RETURN NUMBER IS v NUMBER;
@@ -142,7 +140,6 @@ BEGIN
   RETURN v;
 END;
 /
-
 -- Valor de inventario de ese producto 
 CREATE OR REPLACE FUNCTION fn_valor_inventario_producto(p_producto_id IN NUMBER)
 RETURN NUMBER IS v NUMBER;
@@ -167,6 +164,19 @@ FROM producto;
 CREATE OR REPLACE VIEW vw_productos_por_categoria AS
 SELECT categoria, producto_id, nombre, precio
 FROM producto;
+
+
+--TRIGGER
+
+CREATE OR REPLACE TRIGGER trg_producto_bu_precio
+BEFORE UPDATE OF precio ON producto
+FOR EACH ROW
+BEGIN
+  IF :NEW.precio < 0 THEN
+    RAISE_APPLICATION_ERROR(-20010, 'El precio no puede ser negativo');
+  END IF;
+END;
+/
 
 
 

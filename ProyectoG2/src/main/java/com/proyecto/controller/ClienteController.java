@@ -26,21 +26,18 @@ public class ClienteController {
         this.repo = repo;
     }
 
-    // LISTA
     @GetMapping
     public String listar(Model model) {
         model.addAttribute("clientes", repo.listar());
         return "clientes/lista";
     }
 
-    // FORM CREAR
     @GetMapping("/crear")
     public String crearForm(Model model) {
         model.addAttribute("cliente", new ClienteDTO(null, "", "", "", ""));
         return "clientes/crear";
     }
 
-    // GUARDAR NUEVO
     @PostMapping("/crear")
     public String crear(@RequestParam String nombre,
             @RequestParam String correo,
@@ -53,7 +50,6 @@ public class ClienteController {
         return "redirect:/clientes";
     }
 
-    // FORM EDITAR
     @GetMapping("/{id}/editar")
     public String editarForm(@PathVariable Long id, Model model, RedirectAttributes ra) {
         Optional<ClienteDTO> cli = repo.obtenerPorId(id);
@@ -65,7 +61,6 @@ public class ClienteController {
         return "clientes/editar";
     }
 
-    // ACTUALIZAR
     @PostMapping("/{id}")
     public String actualizar(@PathVariable Long id,
             @RequestParam String nombre,
@@ -79,7 +74,6 @@ public class ClienteController {
         return "redirect:/clientes";
     }
 
-    // ELIMINAR
     @PostMapping("/{id}/eliminar")
     public String eliminar(@PathVariable Long id, RedirectAttributes ra) {
         repo.eliminar(id);
