@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${atencion != null} ? 'Editar atención' : 'Nueva atención'"></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-4">
+    <h2 th:text="${atencion != null} ? 'Editar atención al cliente' : 'Nueva atención al cliente'"></h2>
+
+    <a th:href="@{/reclamos/atenciones}" class="btn btn-secondary btn-sm mb-3">Volver</a>
+
+    <!-- NUEVA ATENCIÓN -->
+    <form th:if="${atencion == null}"
+          th:action="@{/reclamos/atenciones/guardar}"
+          method="post">
+
+        <div class="mb-3">
+            <label class="form-label">Cliente</label>
+            <select class="form-select" name="clienteId" required>
+                <option value="">-- Seleccione --</option>
+                <option th:each="c : ${clientes}"
+                        th:value="${c.clienteId}"
+                        th:text="${c.nombre}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Pedido</label>
+            <select class="form-select" name="pedidoId" required>
+                <option value="">-- Seleccione --</option>
+                <option th:each="p : ${pedidos}"
+                        th:value="${p.pedidoId}"
+                        th:text="${p.pedidoId}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Tipo de atención</label>
+            <select class="form-select" name="tipo">
+                <option th:each="t : ${tiposAtencion}"
+                        th:value="${t}"
+                        th:text="${t}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control" name="descripcion" rows="3" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Estado inicial</label>
+            <select class="form-select" name="estado">
+                <option th:each="e : ${estadosAtencion}"
+                        th:value="${e}"
+                        th:text="${e}"></option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar atención</button>
+    </form>
+
+    <form th:if="${atencion != null}"
+          th:action="@{/reclamos/atenciones/actualizar}"
+          method="post">
+
+        <input type="hidden" name="atencionId" th:value="${atencion.atencionId}"/>
+
+        <div class="mb-3">
+            <label class="form-label">Cliente</label>
+            <input type="text" class="form-control"
+                   th:value="${atencion.nombreCliente}"
+                   readonly>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Pedido</label>
+            <input type="text" class="form-control"
+                   th:value="${atencion.pedidoId}"
+                   readonly>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Tipo de atención</label>
+            <select class="form-select" name="tipo">
+                <option th:each="t : ${tiposAtencion}"
+                        th:value="${t}"
+                        th:text="${t}"
+                        th:selected="${t == atencion.tipo}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control" name="descripcion" rows="3"
+                      th:text="${atencion.descripcion}"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Estado</label>
+            <select class="form-select" name="estado">
+                <option th:each="e : ${estadosAtencion}"
+                        th:value="${e}"
+                        th:text="${e}"
+                        th:selected="${e == atencion.estado}"></option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Actualizar atención</button>
+    </form>
+
+</div>
+
+</body>
+</html>
+
+

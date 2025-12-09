@@ -4,84 +4,83 @@
  */
 package com.proyecto.controller;
 
-import org.springframework.ui.Model;
-import com.proyecto.domain.ProductoDTO;
-import com.proyecto.repository.ProductoRepository;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- *
- * @author PC
- */
+import com.proyecto.domain.ProductoDTO;
+import com.proyecto.domain.ProductoStockDTO;
+import com.proyecto.repository.ProductoDao;
+import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @Controller
 @RequestMapping("/productos")
 public class ProductoController {
 
-    private final ProductoRepository repo;
+    private final ProductoDao productoDao;
 
-    public ProductoController(ProductoRepository repo) {
-        this.repo = repo;
+    public ProductoController(ProductoDao productoDao) {
+        this.productoDao = productoDao;
     }
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("productos", repo.listar());
-        return "productos/lista";
+    public String listarProductos(Model model) {
+        List<ProductoDTO> productos = productoDao.listarProductos();
+        model.addAttribute("productos", productos);
+        return "productos/lista"; 
     }
 
-    @GetMapping("/crear")
-    public String crearForm(Model model) {
-        model.addAttribute("producto", new ProductoDTO(null, "", "", "", 0.0, 0));
-        return "productos/crear";
+    @GetMapping("/nuevo")
+    public String mostrarFormularioNuevo(Model model) {
+        model.addAttribute("producto", new ProductoDTO());
+        return "productos/form";
     }
 
-    @PostMapping("/crear")
-    public String crear(@RequestParam String nombre,
-            @RequestParam String categoria,
-            @RequestParam String descripcion,
-            @RequestParam Double precio,
-            RedirectAttributes ra) {
+    @PostMapping("/guardar")
+    public String guardarProducto(@Valid @ModelAttribute("producto") ProductoDTO productoDTO,
+                                  BindingResult result,
+                                  Model model) {
+        if (result.hasErrors()) {
+            return "productos/form";
+        }
 
-        Long id = repo.crear(nombre, categoria, descripcion, precio);
-        ra.addFlashAttribute("ok", "Producto creado (#" + id + ")");
+        productoDao.crearProducto(productoDTO);
         return "redirect:/productos";
     }
 
-    @GetMapping("/{id}/editar")
-    public String editarForm(@PathVariable Long id, Model model, RedirectAttributes ra) {
-        return repo.obtenerPorId(id)
-                .map(p -> {
-                    model.addAttribute("producto", p);
-                    return "productos/editar";
-                })
-                .orElseGet(() -> {
-                    ra.addFlashAttribute("err", "No existe el producto");
-                    return "redirect:/productos";
-                });
+    @GetMapping("/editar/{id}")
+    public String mostrarFormularioEditar(@PathVariable("id") Long id, Model model) {
+        ProductoDTO producto = productoDao.obtenerProductoPorId(id);
+        model.addAttribute("producto", producto);
+        return "productos/form";
     }
 
-    @PostMapping("/{id}")
-    public String actualizar(@PathVariable Long id,
-            @RequestParam String nombre,
-            @RequestParam String categoria,
-            @RequestParam String descripcion,
-            @RequestParam Double precio,
-            RedirectAttributes ra) {
-        repo.actualizar(id, nombre, categoria, descripcion, precio);
-        ra.addFlashAttribute("ok", "Producto actualizado");
+    @PostMapping("/actualizar")
+    public String actualizarProducto(@Valid @ModelAttribute("producto") ProductoDTO productoDTO,
+                                     BindingResult result,
+                                     Model model) {
+        if (result.hasErrors()) {
+            return "productos/form";
+        }
+
+        productoDao.actualizarProducto(productoDTO);
         return "redirect:/productos";
     }
 
-    @PostMapping("/{id}/eliminar")
-    public String eliminar(@PathVariable Long id, RedirectAttributes ra) {
-        repo.eliminar(id);
-        ra.addFlashAttribute("ok", "Producto eliminado");
+    @GetMapping("/eliminar/{id}")
+    public String eliminarProducto(@PathVariable("id") Long id) {
+        productoDao.eliminarProducto(id);
         return "redirect:/productos";
+    }
+
+    @GetMapping("/inventario")
+    public String verInventario(Model model) {
+        List<ProductoStockDTO> lista = productoDao.listarProductosConStock();
+        model.addAttribute("productosStock", lista);
+        return "productos/inventario"; 
     }
 }
+

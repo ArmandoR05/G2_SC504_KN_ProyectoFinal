@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title th:text="${cliente.clienteId == null} ? 'Nuevo cliente' : 'Editar cliente'"></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Bootstrap CDN -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body class="bg-light">
+
+        <div class="container mt-4">
+
+            <h2 th:text="${cliente.clienteId == null} ? 'Nuevo cliente' : 'Editar cliente'"></h2>
+
+            <a th:href="@{/clientes}" class="btn btn-secondary btn-sm mb-3">Volver</a>
+
+            <!-- mensaje de error general (ej: raise_application_error) -->
+            <div th:if="${error}" class="alert alert-danger">
+                <span th:text="${error}"></span>
+            </div>
+
+            <form th:action="${cliente.clienteId == null} ? @{/clientes/guardar} : @{/clientes/actualizar}"
+                  th:object="${cliente}"
+                  method="post">
+
+                <input type="hidden" th:field="*{clienteId}"/>
+
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" class="form-control" th:field="*{nombre}">
+                    <small class="text-danger" th:if="${#fields.hasErrors('nombre')}"
+                           th:errors="*{nombre}"></small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Correo</label>
+                    <input type="email" class="form-control" th:field="*{correo}">
+                    <small class="text-danger" th:if="${#fields.hasErrors('correo')}"
+                           th:errors="*{correo}"></small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Teléfono</label>
+                    <input type="text" class="form-control" th:field="*{telefono}">
+                    <small class="text-danger" th:if="${#fields.hasErrors('telefono')}"
+                           th:errors="*{telefono}"></small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Dirección</label>
+                    <textarea class="form-control" th:field="*{direccion}" rows="2"></textarea>
+                    <small class="text-danger" th:if="${#fields.hasErrors('direccion')}"
+                           th:errors="*{direccion}"></small>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Guardar
+                </button>
+
+            </form>
+
+        </div>
+
+    </body>
+</html>
+

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav th:fragment="menuPrincipal" class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+
+        <span class="navbar-brand">Proyecto SC-504</span>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuNav">
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <a th:href="@{/clientes}" class="nav-link">Clientes</a>
+                </li>
+
+                <li class="nav-item">
+                    <a th:href="@{/productos}" class="nav-link">Productos</a>
+                </li>
+
+                <li class="nav-item">
+                    <a th:href="@{/pedidos}" class="nav-link">Pedidos</a>
+                </li>
+
+                <li class="nav-item">
+                    <a th:href="@{/proveedores}" class="nav-link">Proveedores</a>
+                </li>
+
+                <li class="nav-item">
+                    <a th:href="@{/ordenescompra}" class="nav-link">Órdenes de compra</a>
+                </li>
+
+                <li class="nav-item">
+                    <a th:href="@{/reclamos}" class="nav-link">Reclamos y devoluciones</a>
+                </li>
+
+            </ul>
+
+            <div class="d-flex">
+                <a th:href="@{/logout}" class="btn btn-outline-light btn-sm">Cerrar sesión</a>
+            </div>
+
+        </div>
+
+    </div>
+</nav>
+
+</body>
+</html>
+

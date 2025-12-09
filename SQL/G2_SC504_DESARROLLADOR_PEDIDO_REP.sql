@@ -1,0 +1,167 @@
+--1)
+--ABRE
+CREATE OR REPLACE PROCEDURE T_PEDIDOS_POR_CLIENTE(
+CSDATOS OUT SYS_REFCURSOR,
+PCLIENTE_ID IN PEDIDO.CLIENTE_ID%TYPE
+)
+AS
+BEGIN
+   OPEN CSDATOS FOR
+      SELECT P.PEDIDO_ID,
+             P.CLIENTE_ID,
+             P.FECHA,
+             P.ESTADO
+      FROM PEDIDO P
+      WHERE P.CLIENTE_ID=PCLIENTE_ID
+      ORDER BY P.FECHA DESC;
+END;
+/
+
+--LLAMA
+CREATE OR REPLACE PROCEDURE CALL_T_PEDIDOS_POR_CLIENTE(
+PCLIENTE_ID IN PEDIDO.CLIENTE_ID%TYPE
+)
+AS
+   DATOS SYS_REFCURSOR;
+   VPEDIDO PEDIDO.PEDIDO_ID%TYPE;
+   VCLIENTE PEDIDO.CLIENTE_ID%TYPE;
+   VFECHA PEDIDO.FECHA%TYPE;
+   VESTADO PEDIDO.ESTADO%TYPE;
+   VCOUNT NUMBER := 0;
+BEGIN
+   T_PEDIDOS_POR_CLIENTE(DATOS,PCLIENTE_ID);
+   LOOP
+      FETCH DATOS INTO VPEDIDO,VCLIENTE,VFECHA,VESTADO;
+      EXIT WHEN DATOS%NOTFOUND;
+      DBMS_OUTPUT.PUT_LINE('PEDIDO: '||VPEDIDO||
+                           ' CLIENTE: '||VCLIENTE||
+                           ' FECHA: '||TO_CHAR(VFECHA,'DD/MM/YYYY')||
+                           ' ESTADO: '||VESTADO);
+      VCOUNT := VCOUNT + 1;
+   END LOOP;
+   DBMS_OUTPUT.PUT_LINE('TOTAL PEDIDOS DEL CLIENTE '||PCLIENTE_ID||' = '||VCOUNT);
+   CLOSE DATOS;
+END;
+/
+
+--2)
+--OPEN
+CREATE OR REPLACE PROCEDURE T_PEDIDOS_POR_ESTADO(
+CSDATOS OUT SYS_REFCURSOR,
+PESTADO IN PEDIDO.ESTADO%TYPE
+)
+AS
+BEGIN
+   OPEN CSDATOS FOR
+      SELECT P.PEDIDO_ID,
+             P.CLIENTE_ID,
+             P.FECHA,
+             P.ESTADO
+      FROM PEDIDO P
+      WHERE UPPER(P.ESTADO)=UPPER(PESTADO)
+      ORDER BY P.FECHA DESC;
+END;
+/
+
+--CONSUME
+CREATE OR REPLACE PROCEDURE CALL_T_PEDIDOS_POR_ESTADO(
+PESTADO IN PEDIDO.ESTADO%TYPE
+)
+AS
+   DATOS SYS_REFCURSOR;
+   VPEDIDO PEDIDO.PEDIDO_ID%TYPE;
+   VCLIENTE PEDIDO.CLIENTE_ID%TYPE;
+   VFECHA PEDIDO.FECHA%TYPE;
+   VESTADO PEDIDO.ESTADO%TYPE;
+   VCOUNT NUMBER := 0;
+BEGIN
+   T_PEDIDOS_POR_ESTADO(DATOS,PESTADO);
+   LOOP
+      FETCH DATOS INTO VPEDIDO,VCLIENTE,VFECHA,VESTADO;
+      EXIT WHEN DATOS%NOTFOUND;
+      DBMS_OUTPUT.PUT_LINE('PEDIDO: '||VPEDIDO||
+                           ' CLIENTE: '||VCLIENTE||
+                           ' FECHA: '||TO_CHAR(VFECHA,'DD/MM/YYYY')||
+                           ' ESTADO: '||VESTADO);
+      VCOUNT := VCOUNT + 1;
+   END LOOP;
+   DBMS_OUTPUT.PUT_LINE('TOTAL PEDIDOS EN ESTADO '||PESTADO||' = '||VCOUNT);
+   CLOSE DATOS;
+END;
+/
+--3
+CREATE OR REPLACE PROCEDURE SP_SQLDN_CURSOR_PEDIDO
+AS
+   VPEDIDO NUMBER;
+   VCLIENTE NUMBER;
+   VFECHA DATE;
+   VESTADO VARCHAR2(50);
+   VSQL VARCHAR2(600);
+   TYPE CUR IS REF CURSOR;
+   CDATOS CUR;
+BEGIN
+   VSQL := 'SELECT PEDIDO_ID,CLIENTE_ID,FECHA,ESTADO FROM PEDIDO ORDER BY FECHA DESC';
+
+   OPEN CDATOS FOR VSQL;
+
+   LOOP
+      FETCH CDATOS INTO VPEDIDO,VCLIENTE,VFECHA,VESTADO;
+      EXIT WHEN CDATOS%NOTFOUND;
+      DBMS_OUTPUT.PUT_LINE('PEDIDO: '||VPEDIDO||
+                           ' CLIENTE: '||VCLIENTE||
+                           ' FECHA: '||TO_CHAR(VFECHA,'DD/MM/YYYY')||
+                           ' ESTADO: '||VESTADO);
+   END LOOP;
+
+   CLOSE CDATOS;
+END;
+/
+
+--PAQUETE
+--DECLARACIÓN
+CREATE OR REPLACE PACKAGE pkg_pedido_rep AS
+    PROCEDURE sp_reporte_pedidos_por_cliente (
+        p_cliente_id IN pedido.cliente_id%TYPE
+    );
+
+    PROCEDURE sp_reporte_pedidos_por_estado (
+        p_estado IN pedido.estado%TYPE
+    );
+
+    PROCEDURE sp_reporte_pedidos_sqldn;
+
+END pkg_pedido_rep;
+/
+--BODY
+CREATE OR REPLACE PACKAGE BODY pkg_pedido_rep AS
+
+    PROCEDURE sp_reporte_pedidos_por_cliente (
+        p_cliente_id IN pedido.cliente_id%TYPE
+    ) AS
+    BEGIN
+        call_t_pedidos_por_cliente(p_cliente_id);
+    END sp_reporte_pedidos_por_cliente;
+
+    PROCEDURE sp_reporte_pedidos_por_estado (
+        p_estado IN pedido.estado%TYPE
+    ) AS
+    BEGIN
+        call_t_pedidos_por_estado(p_estado);
+    END sp_reporte_pedidos_por_estado;
+
+    PROCEDURE sp_reporte_pedidos_sqldn AS
+    BEGIN
+        sp_sqldn_cursor_pedido;
+    END sp_reporte_pedidos_sqldn;
+
+END pkg_pedido_rep;
+/
+
+SET SERVEROUTPUT ON;
+
+
+
+EXEC PKG_PEDIDO_REP.SP_REPORTE_PEDIDOS_POR_CLIENTE(2);
+EXEC PKG_PEDIDO_REP.SP_REPORTE_PEDIDOS_POR_ESTADO('PENDIENTE');
+EXEC PKG_PEDIDO_REP.sp_reporte_pedidos_sqldn;
+

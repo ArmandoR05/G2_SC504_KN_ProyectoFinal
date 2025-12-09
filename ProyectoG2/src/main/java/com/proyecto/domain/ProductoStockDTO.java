@@ -4,31 +4,16 @@
  */
 package com.proyecto.domain;
 
-/**
- *
- * @author PC
- */
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-public class ProductoDTO {
+public class ProductoStockDTO {
 
     private Long productoId;
-
-    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
-
-    @NotBlank(message = "La categoría es obligatoria")
     private String categoria;
-
-    @NotBlank(message = "La descripción es obligatoria")
     private String descripcion;
-
-    @NotNull(message = "El precio es obligatorio")
-    @Min(value = 1, message = "El precio debe ser mayor a cero")
     private BigDecimal precio;
+    private Integer cantidadActual;
 
     // Getters y setters
 
@@ -70,5 +55,13 @@ public class ProductoDTO {
 
     public void setPrecio(BigDecimal precio) {
         this.precio = precio;
+    }
+
+    public Integer getCantidadActual() {
+        return cantidadActual;
+    }
+
+    public void setCantidadActual(Integer cantidadActual) {
+        this.cantidadActual = cantidadActual;
     }
 }
