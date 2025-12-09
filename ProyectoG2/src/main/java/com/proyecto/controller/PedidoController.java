@@ -4,7 +4,6 @@
  */
 package com.proyecto.controller;
 
-
 import com.proyecto.domain.ClienteDTO;
 import com.proyecto.domain.DetallePedidoDTO;
 import com.proyecto.domain.PedidoDTO;
@@ -29,8 +28,8 @@ public class PedidoController {
     private final ProductoDao productoDao;
 
     public PedidoController(PedidoDao pedidoDao,
-                            ClienteDao clienteDao,
-                            ProductoDao productoDao) {
+            ClienteDao clienteDao,
+            ProductoDao productoDao) {
         this.pedidoDao = pedidoDao;
         this.clienteDao = clienteDao;
         this.productoDao = productoDao;
@@ -61,8 +60,8 @@ public class PedidoController {
 
     @PostMapping("/guardar")
     public String guardarPedido(@RequestParam("clienteId") Long clienteId,
-                                @RequestParam("estado") String estado,
-                                Model model) {
+            @RequestParam("estado") String estado,
+            Model model) {
 
         if (clienteId == null || estado == null || estado.isBlank()) {
             model.addAttribute("error", "Debe seleccionar un cliente y un estado.");
@@ -105,15 +104,15 @@ public class PedidoController {
 
     @PostMapping("/{id}/cambiar-estado")
     public String cambiarEstado(@PathVariable("id") Long pedidoId,
-                                @RequestParam("estado") String nuevoEstado) {
+            @RequestParam("estado") String nuevoEstado) {
         pedidoDao.actualizarEstado(pedidoId, nuevoEstado);
         return "redirect:/pedidos/" + pedidoId + "/detalle";
     }
 
     @PostMapping("/{id}/detalle/agregar")
     public String agregarDetalle(@PathVariable("id") Long pedidoId,
-                                 @RequestParam("productoId") Long productoId,
-                                 @RequestParam("cantidad") Integer cantidad) {
+            @RequestParam("productoId") Long productoId,
+            @RequestParam("cantidad") Integer cantidad) {
         pedidoDao.agregarDetalle(pedidoId, productoId, cantidad);
         return "redirect:/pedidos/" + pedidoId + "/detalle";
     }
@@ -126,5 +125,51 @@ public class PedidoController {
         }
         return "redirect:/pedidos";
     }
-}
 
+    // GET: mostrar formulario para editar la línea
+    @GetMapping("/{pedidoId}/detalle/{detalleId}/editar")
+    public String editarDetalle(@PathVariable Long pedidoId,
+            @PathVariable Long detalleId,
+            Model model) {
+
+        PedidoDTO pedido = pedidoDao.obtenerPedido(pedidoId);
+        List<DetallePedidoDTO> detalles = pedidoDao.listarDetalle(pedidoId);
+
+        // buscar solo la línea que queremos editar
+        DetallePedidoDTO detalle = detalles.stream()
+                .filter(d -> d.getDetallePedidoId().equals(detalleId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Detalle no encontrado"));
+
+        List<ProductoDTO> productos = productoDao.listarProductos(); 
+
+        model.addAttribute("pedido", pedido);
+        model.addAttribute("detalle", detalle);
+        model.addAttribute("productos", productos);
+
+        return "pedidos/detalle-editar"; 
+    }
+
+    @PostMapping("/{pedidoId}/detalle/{detalleId}/actualizar")
+    public String actualizarDetalle(@PathVariable Long pedidoId,
+            @PathVariable Long detalleId,
+            @RequestParam Long productoId,
+            @RequestParam Integer cantidad) {
+
+        pedidoDao.actualizarDetalle(detalleId, productoId, cantidad);
+        return "redirect:/pedidos/" + pedidoId + "/detalle";
+    }
+
+    @GetMapping("/{pedidoId}/detalle/{detalleId}/eliminar")
+    public String eliminarDetalle(@PathVariable Long pedidoId,
+            @PathVariable Long detalleId) {
+        try {
+            pedidoDao.eliminarDetalle(detalleId);
+        } catch (Exception e) {
+            
+        }
+        return "redirect:/pedidos/" + pedidoId + "/detalle";
+    }
+
+
+}

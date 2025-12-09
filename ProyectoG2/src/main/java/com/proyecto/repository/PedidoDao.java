@@ -4,7 +4,6 @@
  */
 package com.proyecto.repository;
 
-
 import com.proyecto.domain.DetallePedidoDTO;
 import com.proyecto.domain.PedidoDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,6 +31,8 @@ public class PedidoDao {
     private final SimpleJdbcCall spListarPedidos;
     private final SimpleJdbcCall spAgregarDetalle;
     private final SimpleJdbcCall spListarDetalle;
+    private final SimpleJdbcCall spActualizarDetalle;
+    private final SimpleJdbcCall spEliminarDetalle;
 
     public PedidoDao(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -65,10 +66,18 @@ public class PedidoDao {
                 .withCatalogName("PKG_PEDIDO_APP")
                 .withProcedureName("SP_LISTAR_DETALLE_PEDIDO")
                 .returningResultSet("P_CURSOR", new DetalleRowMapper());
+        this.spActualizarDetalle = new SimpleJdbcCall(jdbcTemplate)
+                .withCatalogName("PKG_PEDIDO_APP")
+                .withProcedureName("SP_ACTUALIZAR_DETALLE_PEDIDO");
+
+        this.spEliminarDetalle = new SimpleJdbcCall(jdbcTemplate)
+                .withCatalogName("PKG_PEDIDO_APP")
+                .withProcedureName("SP_ELIMINAR_DETALLE_PEDIDO");
+
     }
 
-
     private static class PedidoRowMapper implements RowMapper<PedidoDTO> {
+
         @Override
         public PedidoDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
             PedidoDTO dto = new PedidoDTO();
@@ -83,6 +92,7 @@ public class PedidoDao {
     }
 
     private static class DetalleRowMapper implements RowMapper<DetallePedidoDTO> {
+
         @Override
         public DetallePedidoDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
             DetallePedidoDTO dto = new DetallePedidoDTO();
@@ -96,7 +106,6 @@ public class PedidoDao {
         }
     }
 
-
     public Long crearPedido(Long clienteId, String estado) {
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("P_CLIENTE_ID", clienteId)
@@ -104,7 +113,9 @@ public class PedidoDao {
 
         Map<String, Object> out = spCrearPedido.execute(params);
         Object idOut = out.get("P_PEDIDO_ID_O");
-        if (idOut == null) return null;
+        if (idOut == null) {
+            return null;
+        }
         return ((Number) idOut).longValue();
     }
 
@@ -148,7 +159,6 @@ public class PedidoDao {
         return jdbcTemplate.queryForObject(sql, BigDecimal.class, pedidoId);
     }
 
-
     public void agregarDetalle(Long pedidoId, Long productoId, Integer cantidad) {
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("P_PEDIDO_ID", pedidoId)
@@ -166,5 +176,37 @@ public class PedidoDao {
         Map<String, Object> out = spListarDetalle.execute(params);
         return (List<DetallePedidoDTO>) out.get("P_CURSOR");
     }
-}
 
+    public List<PedidoDTO> listarPedidosPorCliente(Long clienteId) {
+        String sql
+                = "SELECT p.pedido_id, "
+                + "       p.cliente_id, "
+                + "       c.nombre AS NOMBRE_CLIENTE, "
+                + "       p.fecha, "
+                + "       p.estado, "
+                + "       PKG_PEDIDO_APP.FN_TOTAL_PEDIDO(p.pedido_id) AS TOTAL_PEDIDO "
+                + "FROM   pedido p "
+                + "JOIN   cliente c ON c.cliente_id = p.cliente_id "
+                + "WHERE  p.cliente_id = ? "
+                + "ORDER  BY p.fecha DESC";
+
+        return jdbcTemplate.query(sql, new PedidoRowMapper(), clienteId);
+    }
+
+    public void actualizarDetalle(Long detalleId, Long productoId, Integer cantidad) {
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("P_DETALLE_ID", detalleId)
+                .addValue("P_PRODUCTO_ID", productoId)
+                .addValue("P_CANTIDAD", cantidad);
+
+        spActualizarDetalle.execute(params);
+    }
+
+    public void eliminarDetalle(Long detalleId) {
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("P_DETALLE_ID", detalleId);
+
+        spEliminarDetalle.execute(params);
+    }
+
+}

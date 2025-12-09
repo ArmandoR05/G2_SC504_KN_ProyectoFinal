@@ -4,10 +4,7 @@
  */
 package com.proyecto.controller;
 
-/**
- *
- * @author PC
- */
+
 import com.proyecto.domain.LoginDTO;
 import com.proyecto.model.Usuario;
 import com.proyecto.repository.UsuarioRepository;

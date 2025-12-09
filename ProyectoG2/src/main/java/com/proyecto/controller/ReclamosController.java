@@ -44,7 +44,7 @@ public class ReclamosController {
     }
 
     private List<String> getTiposReclamo() {
-        return Arrays.asList("PRODUCTO_DAÑADO", "PRODUCTO_EQU equivocado", "OTRO");
+        return Arrays.asList("PRODUCTO DAÑADO", "PRODUCTO EQUIVOCADO", "OTRO");
     }
 
     private List<String> getEstadosReclamo() {
@@ -64,9 +64,18 @@ public class ReclamosController {
     }
 
     @GetMapping("/atenciones/nueva")
-    public String nuevaAtencion(Model model) {
+    public String nuevaAtencion(@RequestParam(value = "clienteId", required = false) Long clienteId,
+            Model model) {
+
         List<ClienteDTO> clientes = clienteDao.listarClientes();
-        List<PedidoDTO> pedidos = pedidoDao.listarPedidos();
+        List<PedidoDTO> pedidos;
+
+        if (clienteId != null) {
+            pedidos = pedidoDao.listarPedidosPorCliente(clienteId);
+            model.addAttribute("clienteSeleccionadoId", clienteId);
+        } else {
+            pedidos = List.of(); 
+        }
 
         model.addAttribute("clientes", clientes);
         model.addAttribute("pedidos", pedidos);
@@ -97,7 +106,7 @@ public class ReclamosController {
     @GetMapping
     public String listarReclamos(Model model) {
         List<ReclamoDTO> reclamos = reclamosDao.listarReclamos();
-        List<AtencionDTO> atenciones = reclamosDao.listarAtenciones(); // para el form modal si querés
+        List<AtencionDTO> atenciones = reclamosDao.listarAtenciones(); 
 
         model.addAttribute("reclamos", reclamos);
         model.addAttribute("atenciones", atenciones);
@@ -118,12 +127,14 @@ public class ReclamosController {
 
     @PostMapping("/guardar")
     public String guardarReclamo(@RequestParam("atencionId") Long atencionId,
-            @RequestParam("detallePedidoId") Long detallePedidoId,
             @RequestParam("tipoReclamo") String tipoReclamo,
             @RequestParam("descripcion") String descripcion,
             @RequestParam("estado") String estado) {
 
+        Long detallePedidoId = reclamosDao.obtenerDetallePedidoPorAtencion(atencionId);
+
         reclamosDao.crearReclamo(atencionId, detallePedidoId, tipoReclamo, descripcion, estado);
+
         return "redirect:/reclamos";
     }
 

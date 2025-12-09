@@ -18,14 +18,12 @@
 
     <div class="card-body">
 
-        <!-- Mensaje de error -->
         <div th:if="${errorLogin}" class="alert alert-danger text-center">
             <span th:text="${errorLogin}"></span>
         </div>
 
         <form th:action="@{/login}" th:object="${loginDTO}" method="post">
 
-            <!-- Usuario -->
             <div class="mb-3">
                 <label class="form-label">Usuario</label>
                 <input type="text"
@@ -38,7 +36,6 @@
                        th:errors="*{nombreUsuario}"></small>
             </div>
 
-            <!-- Contraseña -->
             <div class="mb-3">
                 <label class="form-label">Contraseña</label>
                 <input type="password"
@@ -51,7 +48,6 @@
                        th:errors="*{contrasena}"></small>
             </div>
 
-            <!-- Botón -->
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary">
                     Ingresar

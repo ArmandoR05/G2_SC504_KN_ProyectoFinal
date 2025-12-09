@@ -16,7 +16,6 @@ public class PedidoDTO {
     private String estado;
     private BigDecimal totalPedido;
 
-    // Getters y setters
 
     public Long getPedidoId() {
         return pedidoId;

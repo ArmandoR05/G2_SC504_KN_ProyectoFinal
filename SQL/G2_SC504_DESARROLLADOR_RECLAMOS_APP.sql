@@ -64,6 +64,18 @@ CREATE OR REPLACE PACKAGE pkg_reclamos_app AS
     PROCEDURE sp_eliminar_devolucion (
         p_devolucion_id IN devolucion.devolucion_id%TYPE
     );
+    
+    PROCEDURE sp_actualizar_atencion (
+        p_atencion_id IN atencioncliente.atencion_id%TYPE,
+        p_tipo        IN atencioncliente.tipo%TYPE,
+        p_descripcion IN atencioncliente.descripcion%TYPE,
+        p_estado      IN atencioncliente.estado%TYPE
+);
+
+    PROCEDURE sp_eliminar_atencion (
+    p_atencion_id IN atencioncliente.atencion_id%TYPE
+);
+
 
 
     PROCEDURE sp_listar_devoluciones (
@@ -329,6 +341,48 @@ CREATE OR REPLACE PACKAGE BODY pkg_reclamos_app AS
         COMMIT;
     END sp_eliminar_devolucion;
 
+    
+    PROCEDURE sp_actualizar_atencion (
+    p_atencion_id IN atencioncliente.atencion_id%TYPE,
+    p_tipo        IN atencioncliente.tipo%TYPE,
+    p_descripcion IN atencioncliente.descripcion%TYPE,
+    p_estado      IN atencioncliente.estado%TYPE
+) AS
+BEGIN
+    UPDATE atencioncliente
+    SET tipo        = p_tipo,
+        descripcion = p_descripcion,
+        estado      = p_estado
+    WHERE atencion_id = p_atencion_id;
+
+    COMMIT;
+END sp_actualizar_atencion;
+
+
+    PROCEDURE sp_eliminar_atencion (
+        p_atencion_id IN atencioncliente.atencion_id%TYPE
+    ) AS
+        v_count NUMBER;
+        BEGIN
+        SELECT COUNT(*)
+        INTO v_count
+        FROM reclamo
+        WHERE atencion_id = p_atencion_id;
+
+    IF v_count > 0 THEN
+        RAISE_APPLICATION_ERROR(
+            -20060,
+            'No se puede eliminar la atención porque tiene reclamos asociados.'
+        );
+    END IF;
+
+        DELETE FROM atencioncliente
+        WHERE atencion_id = p_atencion_id;
+
+        COMMIT;
+    END sp_eliminar_atencion;
+
+    
     
    
     

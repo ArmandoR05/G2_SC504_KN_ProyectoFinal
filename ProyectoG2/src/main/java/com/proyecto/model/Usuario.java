@@ -28,7 +28,6 @@ public class Usuario {
     @Column(name = "ESTADO", nullable = false, length = 20)
     private String estado;
 
-    // Getters y setters
 
     public Long getId() {
         return id;

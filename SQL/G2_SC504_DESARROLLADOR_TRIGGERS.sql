@@ -6,7 +6,6 @@ BEGIN
   UPDATE INVENTARIO
   SET CANTIDAD_ACTUAL = CANTIDAD_ACTUAL - :NEW.CANTIDAD
   WHERE PRODUCTO_ID = :NEW.PRODUCTO_ID;
-  -- Se asume que INVENTARIO ya tiene la fila del producto
 END;
 /
 
@@ -18,7 +17,6 @@ BEGIN
   UPDATE INVENTARIO
   SET CANTIDAD_ACTUAL = CANTIDAD_ACTUAL + :NEW.CANTIDAD
   WHERE PRODUCTO_ID = :NEW.PRODUCTO_ID;
-  -- También se asume que INVENTARIO ya tiene la fila del producto
 END;
 /
 
@@ -72,5 +70,39 @@ BEGIN
   END IF;
 END;
 /
+
+--6
+
+CREATE OR REPLACE TRIGGER trg_reclamo_pedido_estado
+AFTER INSERT ON reclamo
+FOR EACH ROW
+BEGIN
+    UPDATE pedido
+    SET estado = 'EN_RECLAMO'
+    WHERE pedido_id = (
+        SELECT a.pedido_id
+        FROM atencioncliente a
+        WHERE a.atencion_id = :NEW.atencion_id
+    );
+END;
+/
+
+--7
+CREATE OR REPLACE TRIGGER trg_devolucion_pedido_estado
+AFTER INSERT ON devolucion
+FOR EACH ROW
+BEGIN
+    UPDATE pedido
+    SET estado = 'DEVUELTO'
+    WHERE pedido_id = (
+        SELECT a.pedido_id
+        FROM atencioncliente a
+        JOIN reclamo r ON r.atencion_id = a.atencion_id
+        WHERE r.reclamo_id = :NEW.reclamo_id
+    );
+END;
+/
+
+
 
 

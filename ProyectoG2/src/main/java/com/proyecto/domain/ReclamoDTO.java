@@ -4,10 +4,7 @@
  */
 package com.proyecto.domain;
 
-/**
- *
- * @author PC
- */
+
 
 public class ReclamoDTO {
 

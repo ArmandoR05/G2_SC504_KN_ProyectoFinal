@@ -15,7 +15,6 @@ public class DetallePedidoDTO {
     private Integer cantidad;
     private BigDecimal subtotal;
 
-    // Getters y setters
 
     public Long getDetallePedidoId() {
         return detallePedidoId;

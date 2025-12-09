@@ -30,7 +30,6 @@ public class ProductoDTO {
     @Min(value = 1, message = "El precio debe ser mayor a cero")
     private BigDecimal precio;
 
-    // Getters y setters
 
     public Long getProductoId() {
         return productoId;

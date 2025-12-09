@@ -15,7 +15,6 @@ public class LoginDTO {
     @NotBlank(message = "La contraseña es obligatoria")
     private String contrasena;
 
-    // Getters y setters
 
     public String getNombreUsuario() {
         return nombreUsuario;

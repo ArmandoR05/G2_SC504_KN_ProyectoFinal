@@ -37,6 +37,16 @@ CREATE OR REPLACE PACKAGE pkg_pedido_app AS
         p_cursor    OUT SYS_REFCURSOR
     );
 
+    PROCEDURE sp_actualizar_detalle_pedido (
+        p_detalle_id  IN detallepedido.detalle_pedido_id%TYPE,
+        p_producto_id IN detallepedido.producto_id%TYPE,
+        p_cantidad    IN detallepedido.cantidad%TYPE
+    );
+
+    PROCEDURE sp_eliminar_detalle_pedido (
+        p_detalle_id IN detallepedido.detalle_pedido_id%TYPE
+    );
+
     FUNCTION fn_pedido_existe (
         p_pedido_id IN pedido.pedido_id%TYPE
     ) RETURN NUMBER;
@@ -47,11 +57,6 @@ CREATE OR REPLACE PACKAGE pkg_pedido_app AS
 
 END pkg_pedido_app;
 /
-
-
-
-
-
 
 CREATE OR REPLACE PACKAGE BODY pkg_pedido_app AS
 
@@ -254,6 +259,85 @@ CREATE OR REPLACE PACKAGE BODY pkg_pedido_app AS
 
     END sp_listar_detalle_pedido;
 
+    PROCEDURE sp_actualizar_detalle_pedido (
+        p_detalle_id  IN detallepedido.detalle_pedido_id%TYPE,
+        p_producto_id IN detallepedido.producto_id%TYPE,
+        p_cantidad    IN detallepedido.cantidad%TYPE
+    ) AS
+        v_existe_detalle  NUMBER;
+        v_existe_producto NUMBER;
+        v_precio          producto.precio%TYPE;
+        v_subtotal        detallepedido.subtotal%TYPE;
+    BEGIN
+        SELECT
+            COUNT(*)
+        INTO v_existe_detalle
+        FROM
+            detallepedido
+        WHERE
+            detalle_pedido_id = p_detalle_id;
+
+        IF v_existe_detalle = 0 THEN
+            raise_application_error(-23050, 'EL DETALLE DE PEDIDO NO EXISTE');
+        END IF;
+        v_existe_producto := pkg_producto_app.fn_producto_existe(p_producto_id);
+        IF v_existe_producto = 0 THEN
+            raise_application_error(-23051, 'EL PRODUCTO INDICADO NO EXISTE');
+        END IF;
+        IF p_cantidad IS NULL
+           OR p_cantidad <= 0 THEN
+            raise_application_error(-23052, 'LA CANTIDAD DEBE SER MAYOR A CERO');
+        END IF;
+
+        SELECT
+            precio
+        INTO v_precio
+        FROM
+            producto
+        WHERE
+            producto_id = p_producto_id;
+
+        v_subtotal := v_precio * p_cantidad;
+        UPDATE detallepedido
+        SET
+            producto_id = p_producto_id,
+            cantidad = p_cantidad,
+            subtotal = v_subtotal
+        WHERE
+            detalle_pedido_id = p_detalle_id;
+
+        IF SQL%rowcount = 0 THEN
+            raise_application_error(-23053, 'NO SE ACTUALIZO NINGUN REGISTRO');
+        END IF;
+        COMMIT;
+    EXCEPTION
+        WHEN no_data_found THEN
+            raise_application_error(-23054, 'NO SE ENCONTRO EL PRODUCTO PARA OBTENER PRECIO');
+        WHEN OTHERS THEN
+            raise_application_error(-23994, 'ERROR AL ACTUALIZAR DETALLE DEL PEDIDO: ' || sqlerrm);
+    END sp_actualizar_detalle_pedido;
+
+    PROCEDURE sp_eliminar_detalle_pedido (
+        p_detalle_id IN detallepedido.detalle_pedido_id%TYPE
+    ) AS
+    BEGIN
+        DELETE FROM detallepedido
+        WHERE
+            detalle_pedido_id = p_detalle_id;
+
+        IF SQL%rowcount = 0 THEN
+            raise_application_error(-20055, 'NO SE ELIMINÓ NINGÚN DETALLE (ID no existe)');
+        END IF;
+        COMMIT;
+    EXCEPTION
+        WHEN OTHERS THEN
+            IF sqlcode = -2292 THEN
+                raise_application_error(-20096, 'NO SE PUEDE ELIMINAR EL DETALLE: EXISTEN DEVOLUCIONES ASOCIADAS.');
+            ELSE
+                raise_application_error(-20093, 'ERROR AL ELIMINAR DETALLE DEL PEDIDO: ' || sqlerrm);
+            END IF;
+    END sp_eliminar_detalle_pedido;
+
     FUNCTION fn_pedido_existe (
         p_pedido_id IN pedido.pedido_id%TYPE
     ) RETURN NUMBER AS
@@ -301,4 +385,3 @@ CREATE OR REPLACE PACKAGE BODY pkg_pedido_app AS
 
 END pkg_pedido_app;
 /
-

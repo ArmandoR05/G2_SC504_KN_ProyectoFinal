@@ -13,7 +13,6 @@
 
             <a th:href="@{/reclamos}" class="btn btn-secondary btn-sm mb-3">Volver</a>
 
-            <!-- FORMULARIO NUEVO RECLAMO -->
             <form th:if="${reclamo == null}"
                   th:action="@{/reclamos/guardar}"
                   method="post">
@@ -26,12 +25,11 @@
                                 th:value="${a.atencionId}"
                                 th:text="${'Atención #' + a.atencionId + ' - ' + a.nombreCliente}"></option>
                     </select>
+                    <small class="text-muted">
+                        El detalle de pedido se tomará automáticamente según el pedido de la atención.
+                    </small>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">ID Detalle Pedido (línea afectada)</label>
-                    <input type="number" class="form-control" name="detallePedidoId" required>
-                </div>
 
                 <div class="mb-3">
                     <label class="form-label">Tipo de reclamo</label>
@@ -59,7 +57,7 @@
                 <button type="submit" class="btn btn-primary">Guardar reclamo</button>
             </form>
 
-            <!-- FORMULARIO EDITAR RECLAMO -->
+
             <form th:if="${reclamo != null}"
                   th:action="@{/reclamos/actualizar}"
                   method="post">

@@ -5,7 +5,6 @@
     <title>Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap (puedes quitarlo si usarás otro framework) -->
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body class="bg-light d-flex align-items-center justify-content-center" style="height:100vh;">
@@ -17,14 +16,12 @@
 
     <div class="card-body">
 
-        <!-- Mensaje de error de login -->
         <div th:if="${errorLogin}" class="alert alert-danger text-center">
             <span th:text="${errorLogin}"></span>
         </div>
 
         <form th:action="@{/login}" th:object="${loginDTO}" method="post">
 
-            <!-- Usuario -->
             <div class="mb-3">
                 <label class="form-label">Usuario</label>
                 <input type="text"

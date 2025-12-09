@@ -13,7 +13,6 @@ public class MenuController {
 
     @GetMapping("/menu")
     public String mostrarMenu() {
-        // Va a cargar templates/menu.html
         return "menu";
     }
 }

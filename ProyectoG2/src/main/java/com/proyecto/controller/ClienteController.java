@@ -33,14 +33,12 @@ public class ClienteController {
         return "clientes/lista";
     }
 
-    // Formulario nuevo cliente
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevo(Model model) {
         model.addAttribute("cliente", new ClienteDTO());
         return "clientes/form";
     }
 
-    // Guardar nuevo (sp_crear_cliente)
     @PostMapping("/guardar")
     public String guardarCliente(@Valid @ModelAttribute("cliente") ClienteDTO clienteDTO,
                                  BindingResult result,
@@ -59,7 +57,6 @@ public class ClienteController {
         return "redirect:/clientes";
     }
 
-    // Formulario edición
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable("id") Long id, Model model) {
         ClienteDTO cliente = clienteDao.obtenerCliente(id);
@@ -67,7 +64,6 @@ public class ClienteController {
         return "clientes/form";
     }
 
-    // Actualizar (sp_actualizar_cliente)
     @PostMapping("/actualizar")
     public String actualizarCliente(@Valid @ModelAttribute("cliente") ClienteDTO clienteDTO,
                                     BindingResult result,
@@ -86,7 +82,6 @@ public class ClienteController {
         return "redirect:/clientes";
     }
 
-    // Eliminar (sp_eliminar_cliente)
     @GetMapping("/eliminar/{id}")
     public String eliminarCliente(@PathVariable("id") Long id, Model model) {
         try {

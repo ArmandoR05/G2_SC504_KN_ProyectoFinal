@@ -54,8 +54,10 @@
                         <th>Producto</th>
                         <th>Cantidad</th>
                         <th class="text-end">Subtotal</th>
+                        <th>Acciones</th> 
                     </tr>
                 </thead>
+
                 <tbody>
                     <tr th:each="d : ${detalles}">
                         <td th:text="${d.detallePedidoId}"></td>
@@ -63,10 +65,19 @@
                         <td th:text="${d.cantidad}"></td>
                         <td class="text-end"
                             th:text="${#numbers.formatDecimal(d.subtotal, 1, 'COMMA', 2, 'POINT')}"></td>
+                        <td>
+                            <a th:href="@{'/pedidos/' + ${pedido.pedidoId} + '/detalle/' + ${d.detallePedidoId} + '/editar'}"
+                               class="btn btn-sm btn-outline-primary me-1">
+                                Editar
+                            </a>
+                            <a th:href="@{'/pedidos/' + ${pedido.pedidoId} + '/detalle/' + ${d.detallePedidoId} + '/eliminar'}"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('¿Eliminar esta línea del pedido?');">
+                                Eliminar
+                            </a>
+                        </td>
                     </tr>
-                    <tr th:if="${#lists.isEmpty(detalles)}">
-                        <td colspan="4" class="text-center">No hay productos en este pedido.</td>
-                    </tr>
+
                 </tbody>
             </table>
 

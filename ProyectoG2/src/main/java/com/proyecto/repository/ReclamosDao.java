@@ -330,4 +330,15 @@ public class ReclamosDao {
         spEliminarAtencion.execute(params);
     }
 
+    public Long obtenerDetallePedidoPorAtencion(Long atencionId) {
+        String sql
+                = "SELECT MIN(d.detalle_pedido_id) "
+                + "FROM atencioncliente a "
+                + "JOIN pedido p ON p.pedido_id = a.pedido_id "
+                + "JOIN detallepedido d ON d.pedido_id = p.pedido_id "
+                + "WHERE a.atencion_id = ?";
+
+        return jdbcTemplate.queryForObject(sql, Long.class, atencionId);
+    }
+
 }

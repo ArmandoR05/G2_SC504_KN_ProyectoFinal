@@ -15,7 +15,6 @@ public class ProductoStockDTO {
     private BigDecimal precio;
     private Integer cantidadActual;
 
-    // Getters y setters
 
     public Long getProductoId() {
         return productoId;

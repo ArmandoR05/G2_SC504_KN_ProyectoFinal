@@ -13,7 +13,6 @@
 
             <a th:href="@{/reclamos/devoluciones}" class="btn btn-secondary btn-sm mb-3">Volver</a>
 
-            <!-- NUEVA DEVOLUCIÓN -->
             <form th:if="${devolucion == null}"
                   th:action="@{/reclamos/devoluciones/guardar}"
                   method="post">
